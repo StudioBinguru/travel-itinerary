@@ -2,7 +2,6 @@ const SOURCE = location.pathname.includes("/portugal/flights/")
   ? "../flight_monitoring.md"
   : "./flight_monitoring.md";
 const content = document.querySelector("#monitoring-content");
-const refreshButton = document.querySelector("#refresh");
 document.querySelector("#source-link").href = SOURCE;
 
 function escapeHtml(value) {
@@ -39,6 +38,7 @@ function renderMarkdown(markdown) {
   while (index < lines.length) {
     const line = lines[index].trim();
     if (!line) { index += 1; continue; }
+    if (/^마지막 추적:\s*/.test(line)) { index += 1; continue; }
 
     const heading = line.match(/^(#{1,3})\s+(.+)$/);
     if (heading) {
@@ -84,14 +84,16 @@ function renderMarkdown(markdown) {
 function updateSummary(markdown) {
   const tracked = markdown.match(/마지막 추적:\s*([^\n]+)/)?.[1] || "확인 불가";
   const directSection = markdown.match(/## 리스본 왕복 직항[\s\S]*?(?=\n## )/)?.[0] || "";
+  const roundtripSection = markdown.match(/## 리스본 왕복 경유[\s\S]*?(?=\n## )/)?.[0] || "";
+  const openjawSection = markdown.match(/## 포르투갈 오픈조[\s\S]*?(?=\n## )/)?.[0] || "";
   const directPrice = directSection.match(/\*\*([\d,]+원)\*\*/)?.[1] || "결과 없음";
-  const roundtrip = markdown.match(/리스본 왕복 경유 조건 충족 항공권 \((\d+)개\)/)?.[1] || "0";
-  const openjaw = markdown.match(/포르투갈 오픈조 조건 충족 항공권[^\n]*\((\d+)개\)/)?.[1] || "0";
+  const roundtripPrice = roundtripSection.match(/\*\*([\d,]+원)\*\*/)?.[1] || "결과 없음";
+  const openjawPrice = openjawSection.match(/\*\*([\d,]+원)\*\*/)?.[1] || "결과 없음";
 
   document.querySelector("#last-tracked").textContent = `마지막 추적 ${tracked}`;
   document.querySelector("#direct-price").textContent = directPrice;
-  document.querySelector("#roundtrip-count").textContent = `${roundtrip}개`;
-  document.querySelector("#openjaw-count").textContent = `${openjaw}개`;
+  document.querySelector("#roundtrip-price").textContent = roundtripPrice;
+  document.querySelector("#openjaw-price").textContent = openjawPrice;
 }
 
 function updateNav(markdown) {
@@ -187,8 +189,6 @@ function enhanceFlightCards() {
 }
 
 async function loadMonitoring() {
-  refreshButton.disabled = true;
-  refreshButton.textContent = "갱신 중…";
   try {
     const response = await fetch(`${SOURCE}?v=${Date.now()}`, { cache: "no-store" });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -199,12 +199,8 @@ async function loadMonitoring() {
     enhanceFlightCards();
   } catch (error) {
     content.innerHTML = `<div class="error"><h2>기록을 불러오지 못했어요.</h2><p>잠시 뒤 다시 시도해 주세요. (${escapeHtml(error.message)})</p></div>`;
-  } finally {
-    refreshButton.disabled = false;
-    refreshButton.textContent = "지금 새로고침";
   }
 }
 
-refreshButton.addEventListener("click", loadMonitoring);
 loadMonitoring();
 setInterval(loadMonitoring, 5 * 60 * 1000);
