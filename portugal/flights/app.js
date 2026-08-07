@@ -104,6 +104,83 @@ function updateNav(markdown) {
   });
 }
 
+function rowValue(table, label) {
+  const row = [...table.querySelectorAll("tbody tr")].find((item) => item.querySelector("th")?.textContent.trim() === label);
+  return row?.querySelector("td")?.textContent.trim() || "";
+}
+
+function firstTime(value) {
+  return value.match(/\b\d{2}:\d{2}\b/)?.[0] || "—";
+}
+
+function duration(value) {
+  return value.match(/(?:총|비행)\s*([^·,]+)/)?.[1]?.trim() || "시간 확인 필요";
+}
+
+function stopType(value) {
+  return value.match(/직항|경유\s*\d+회/)?.[0] || "운항 정보";
+}
+
+function airlineCode(airline) {
+  if (airline.includes("대한항공")) return "KE";
+  if (airline.includes("아시아나")) return "OZ";
+  if (airline.includes("에어프랑스")) return "AF";
+  if (airline.includes("KLM")) return "KL";
+  return "✈";
+}
+
+function enhanceFlightCards() {
+  const headings = [...content.querySelectorAll("h3")];
+
+  for (const heading of headings) {
+    const table = heading.nextElementSibling;
+    if (!table?.matches("table")) continue;
+
+    const airline = rowValue(table, "항공사") || "항공사 확인 필요";
+    const travelDate = rowValue(table, "여행일") || heading.textContent.replace(/^\d+\)\s*/, "");
+    const outbound = rowValue(table, "가는 편");
+    const inbound = rowValue(table, "오는 편");
+    const lisbonArrival = rowValue(table, "리스본 도착");
+    const seoulArrival = rowValue(table, "인천 도착") || rowValue(table, "서울 도착");
+    const price = rowValue(table, "최저 카드가") || "가격 확인 필요";
+    const priceOnly = price.match(/[\d,]+원/)?.[0] || price;
+    const priceCondition = price.replace(priceOnly, "").replace(/^\s*·\s*/, "") || "결제 조건 없음";
+    const inboundOrigin = inbound.includes("포르투") ? "OPO" : "LIS";
+    const isLowest = heading.textContent.includes("현재 최저가");
+
+    const card = document.createElement("details");
+    card.className = "flight-card";
+    const preview = document.createElement("summary");
+    preview.className = "flight-preview";
+    preview.setAttribute("aria-label", `${airline}, ${travelDate}, ${priceOnly}, 상세정보 펼치기`);
+    preview.innerHTML = `
+      <div class="flight-airline">
+        <span class="airline-mark">${escapeHtml(airlineCode(airline))}</span>
+        <span><strong>${escapeHtml(airline)}</strong><small>${isLowest ? '<em>현재 최저가</em>' : ''}${escapeHtml(travelDate)}</small></span>
+      </div>
+      <div class="flight-times">
+        <span><b>${escapeHtml(firstTime(outbound))}</b> <i>ICN</i><span class="route-arrow">→</span><b>${escapeHtml(firstTime(lisbonArrival))}</b> <i>LIS</i></span>
+        <span><b>${escapeHtml(firstTime(inbound))}</b> <i>${inboundOrigin}</i><span class="route-arrow">→</span><b>${escapeHtml(firstTime(seoulArrival))}</b> <i>ICN</i></span>
+      </div>
+      <div class="flight-stops">
+        <span>${escapeHtml(stopType(outbound))} · ${escapeHtml(duration(lisbonArrival))}</span>
+        <span>${escapeHtml(stopType(inbound))} · ${escapeHtml(duration(seoulArrival))}</span>
+      </div>
+      <div class="flight-price">
+        <small>${escapeHtml(priceCondition)}</small>
+        <strong>${escapeHtml(priceOnly)}</strong>
+      </div>
+      <span class="flight-chevron" aria-hidden="true"></span>`;
+
+    const expanded = document.createElement("div");
+    expanded.className = "flight-expanded";
+    heading.before(card);
+    card.append(preview, expanded);
+    expanded.append(table);
+    heading.remove();
+  }
+}
+
 async function loadMonitoring() {
   refreshButton.disabled = true;
   refreshButton.textContent = "갱신 중…";
@@ -114,6 +191,7 @@ async function loadMonitoring() {
     updateSummary(markdown);
     updateNav(markdown);
     content.innerHTML = renderMarkdown(markdown);
+    enhanceFlightCards();
   } catch (error) {
     content.innerHTML = `<div class="error"><h2>기록을 불러오지 못했어요.</h2><p>잠시 뒤 다시 시도해 주세요. (${escapeHtml(error.message)})</p></div>`;
   } finally {
