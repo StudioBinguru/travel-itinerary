@@ -129,6 +129,10 @@ function airlineCode(airline) {
   return "✈";
 }
 
+function airlineNameMarkup(airline) {
+  return airline.split(/\s*·\s*/).map(escapeHtml).join(" ·<wbr> ");
+}
+
 function enhanceFlightCards() {
   const headings = [...content.querySelectorAll("h3")];
 
@@ -147,6 +151,7 @@ function enhanceFlightCards() {
     const priceCondition = price.replace(priceOnly, "").replace(/^\s*·\s*/, "") || "결제 조건 없음";
     const inboundOrigin = inbound.includes("포르투") ? "OPO" : "LIS";
     const isLowest = heading.textContent.includes("현재 최저가");
+    const longAirline = airline.includes("공동운항") || airline.split("·").length >= 3;
 
     const card = document.createElement("details");
     card.className = "flight-card";
@@ -156,7 +161,7 @@ function enhanceFlightCards() {
     preview.innerHTML = `
       <div class="flight-airline">
         <span class="airline-mark">${escapeHtml(airlineCode(airline))}</span>
-        <span><strong>${escapeHtml(airline)}</strong><small>${isLowest ? '<em>현재 최저가</em>' : ''}${escapeHtml(travelDate)}</small></span>
+        <span><strong class="airline-name${longAirline ? ' airline-name--long' : ''}">${airlineNameMarkup(airline)}</strong><small>${isLowest ? '<em>현재 최저가</em>' : ''}${escapeHtml(travelDate)}</small></span>
       </div>
       <div class="flight-times">
         <span><b>${escapeHtml(firstTime(outbound))}</b> <i>ICN</i><span class="route-arrow">→</span><b>${escapeHtml(firstTime(lisbonArrival))}</b> <i>LIS</i></span>

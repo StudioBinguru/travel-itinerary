@@ -143,6 +143,7 @@ h1 {
 .flight-preview::-webkit-details-marker { display: none; }
 .flight-preview:hover { background: #fbf9f1; }
 .flight-airline { display: flex; gap: 11px; align-items: flex-start; min-width: 0; }
+.flight-airline > span:last-child { min-width: 0; }
 .airline-mark {
   flex: 0 0 auto;
   display: grid;
@@ -156,7 +157,8 @@ h1 {
   font-weight: 900;
   letter-spacing: -.03em;
 }
-.flight-airline strong { display: block; overflow: hidden; color: var(--ink); font-size: .95rem; text-overflow: ellipsis; white-space: nowrap; }
+.flight-airline strong { display: block; color: var(--ink); font-size: .95rem; line-height: 1.38; overflow-wrap: normal; white-space: normal; }
+.flight-airline .airline-name--long { font-size: .78rem; letter-spacing: -.035em; line-height: 1.45; }
 .flight-airline small { display: block; margin-top: 5px; color: var(--muted); font-size: .73rem; line-height: 1.4; }
 .flight-airline em { display: inline-block; margin-right: 6px; padding: 2px 6px; color: white; border-radius: 999px; background: var(--orange); font-size: .65rem; font-style: normal; font-weight: 800; }
 .flight-times, .flight-stops { display: grid; gap: 9px; font-size: .85rem; }
@@ -200,7 +202,7 @@ footer a { color: var(--green); font-weight: 700; }
     padding: 16px;
   }
   .flight-airline { grid-area: airline; }
-  .flight-airline strong { white-space: normal; }
+  .flight-airline .airline-name--long { font-size: .8rem; }
   .flight-times { grid-area: times; padding: 13px 0; border-top: 1px solid #e8ece9; border-bottom: 1px solid #e8ece9; }
   .flight-times > span { display: grid; grid-template-columns: 46px 28px 22px 46px 28px; align-items: center; }
   .route-arrow { margin: 0; text-align: center; }
