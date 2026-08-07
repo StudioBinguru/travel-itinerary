@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#0f5c4b" />
     <meta name="description" content="서울-포르투갈 항공권 가격과 조건을 2시간마다 추적하는 대시보드" />
     <title>포르투갈 항공권 모니터링</title>
-    <link rel="stylesheet" href="./styles.css?v=20260807-4" />
+    <link rel="stylesheet" href="./styles.css?v=20260807-5" />
   </head>
   <body>
     <header class="hero">
@@ -17,15 +17,15 @@
         <div class="summary" aria-label="조회 결과 요약">
           <article class="summary__card">
             <span>직항 최저가</span>
-            <strong id="direct-price">불러오는 중</strong>
+            <div class="summary__value"><strong id="direct-price">불러오는 중</strong><small id="direct-trend" class="price-trend price-trend--neutral">— 변동 없음</small></div>
           </article>
           <article class="summary__card">
             <span>리스본 왕복 경유 최저가</span>
-            <strong id="roundtrip-price">—</strong>
+            <div class="summary__value"><strong id="roundtrip-price">—</strong><small id="roundtrip-trend" class="price-trend price-trend--neutral">— 변동 없음</small></div>
           </article>
           <article class="summary__card">
             <span>리스본 IN · 포르투 OUT 최저가</span>
-            <strong id="openjaw-price">—</strong>
+            <div class="summary__value"><strong id="openjaw-price">—</strong><small id="openjaw-trend" class="price-trend price-trend--neutral">— 변동 없음</small></div>
           </article>
         </div>
 
@@ -55,6 +55,6 @@
       <a id="source-link" href="../flight_monitoring.md">원본 기록 보기</a>
     </footer>
 
-    <script src="./app.js?v=20260807-4" defer></script>
+    <script src="./app.js?v=20260807-5" defer></script>
   </body>
 </html>

@@ -81,6 +81,38 @@ function renderMarkdown(markdown) {
   return html.join("");
 }
 
+function numericPrice(value) {
+  const digits = value?.replace(/[^\d]/g, "");
+  return digits ? Number(digits) : null;
+}
+
+function latestHistoryPrice(markdown, label) {
+  const history = markdown.match(/## 이전 최저가 이력([\s\S]*?)(?=\n## 조회 조건)/)?.[1] || "";
+  const escapedLabel = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const section = history.match(new RegExp(`\\*\\*${escapedLabel}[^*]*\\*\\*([\\s\\S]*?)(?=\\n\\*\\*|$)`))?.[1] || "";
+  const entries = [...section.matchAll(/(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2})\s*·\s*([\d,]+원)/g)]
+    .map((match) => ({ trackedAt: match[1], price: numericPrice(match[2]) }))
+    .sort((a, b) => b.trackedAt.localeCompare(a.trackedAt));
+  return entries[0]?.price ?? null;
+}
+
+function updateTrend(elementId, currentPrice, previousPrice) {
+  const element = document.querySelector(`#${elementId}`);
+  const difference = previousPrice == null ? 0 : currentPrice - previousPrice;
+  element.className = "price-trend";
+
+  if (difference > 0) {
+    element.classList.add("price-trend--up");
+    element.textContent = `↑ 상승 ${difference.toLocaleString("ko-KR")}원`;
+  } else if (difference < 0) {
+    element.classList.add("price-trend--down");
+    element.textContent = `↓ 하락 ${Math.abs(difference).toLocaleString("ko-KR")}원`;
+  } else {
+    element.classList.add("price-trend--neutral");
+    element.textContent = "— 변동 없음";
+  }
+}
+
 function updateSummary(markdown) {
   const tracked = markdown.match(/마지막 추적:\s*([^\n]+)/)?.[1] || "확인 불가";
   const directSection = markdown.match(/## 리스본 왕복 직항[\s\S]*?(?=\n## )/)?.[0] || "";
@@ -94,6 +126,9 @@ function updateSummary(markdown) {
   document.querySelector("#direct-price").textContent = directPrice;
   document.querySelector("#roundtrip-price").textContent = roundtripPrice;
   document.querySelector("#openjaw-price").textContent = openjawPrice;
+  updateTrend("direct-trend", numericPrice(directPrice), latestHistoryPrice(markdown, "직항"));
+  updateTrend("roundtrip-trend", numericPrice(roundtripPrice), latestHistoryPrice(markdown, "경유"));
+  updateTrend("openjaw-trend", numericPrice(openjawPrice), latestHistoryPrice(markdown, "오픈조"));
 }
 
 function updateNav(markdown) {
