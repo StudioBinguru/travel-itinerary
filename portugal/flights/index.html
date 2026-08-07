@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0f5c4b" />
+    <meta name="description" content="서울-포르투갈 항공권 가격과 조건을 2시간마다 추적하는 대시보드" />
+    <title>포르투갈 항공권 모니터링</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero__inner">
+        <p class="eyebrow">SEOUL ↔ PORTUGAL · 2026.09</p>
+        <h1>포르투갈 항공권<br />모니터링</h1>
+        <p class="hero__copy">직항, 리스본 왕복 경유, 리스본 IN · 포르투 OUT을 같은 조건으로 비교합니다.</p>
+
+        <div class="summary" aria-label="조회 결과 요약">
+          <article class="summary__card">
+            <span>직항 최저가</span>
+            <strong id="direct-price">불러오는 중</strong>
+          </article>
+          <article class="summary__card">
+            <span>리스본 왕복 경유</span>
+            <strong id="roundtrip-count">—</strong>
+          </article>
+          <article class="summary__card">
+            <span>리스본 IN · 포르투 OUT</span>
+            <strong id="openjaw-count">—</strong>
+          </article>
+        </div>
+
+        <div class="status-line">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span id="last-tracked">최근 기록을 확인하는 중</span>
+          <button id="refresh" type="button">지금 새로고침</button>
+        </div>
+      </div>
+    </header>
+
+    <nav class="section-nav" aria-label="항공권 종류">
+      <a href="#리스본-왕복-직항-최저가-항공권">직항</a>
+      <a href="#리스본-왕복-경유-조건-충족-항공권-13개">리스본 왕복</a>
+      <a href="#포르투갈-오픈조-조건-충족-항공권-6개">리스본 IN · 포르투 OUT</a>
+      <a href="#이전-최저가-이력">가격 이력</a>
+    </nav>
+
+    <main id="monitoring-content" class="content" aria-live="polite">
+      <div class="loading">
+        <span class="loading__mark">P</span>
+        <p>최신 항공권 기록을 불러오고 있어요.</p>
+      </div>
+    </main>
+
+    <footer>
+      <p>표시 가격은 조회 시점 기준이며 결제 단계에서 달라질 수 있습니다.</p>
+      <a id="source-link" href="../flight_monitoring.md">원본 기록 보기</a>
+    </footer>
+
+    <script src="./app.js" defer></script>
+  </body>
+</html>

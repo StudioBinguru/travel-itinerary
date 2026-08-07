@@ -1,0 +1,893 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="서울에서 리스본까지, 포르투갈 여행 첫날의 이동 기록" />
+  <title>Portugal, Here We Go!</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Gowun+Dodum&family=Pacifico&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #17365d;
+      --blue: #2878c8;
+      --blue-deep: #15559b;
+      --sky: #d9eff8;
+      --cream: #fffaf0;
+      --paper: #fffdf8;
+      --red: #ef6a5b;
+      --yellow: #f4c95d;
+      --green: #4d9b76;
+      --shadow: 0 18px 50px rgba(23, 54, 93, 0.14);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: "DM Sans", "Gowun Dodum", sans-serif;
+      background:
+        radial-gradient(circle at 8% 15%, rgba(244, 201, 93, 0.18) 0 4px, transparent 5px),
+        radial-gradient(circle at 92% 82%, rgba(239, 106, 91, 0.14) 0 5px, transparent 6px),
+        #f4eee2;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.28;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.12'/%3E%3C/svg%3E");
+      mix-blend-mode: multiply;
+      z-index: 20;
+    }
+
+    button { font: inherit; }
+
+    .page-shell {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 30px 0 44px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 22px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 5px;
+      color: var(--red);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 24px;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--red);
+    }
+
+    h1 {
+      margin: 0;
+      font-family: "Pacifico", cursive;
+      color: var(--blue-deep);
+      font-size: clamp(34px, 5vw, 64px);
+      font-weight: 400;
+      line-height: 1.08;
+      transform: rotate(-1deg);
+    }
+
+    .trip-date {
+      margin: 8px 0 0;
+      font-family: "Gowun Dodum", sans-serif;
+      color: #64758b;
+      font-size: 14px;
+    }
+
+    .stamp {
+      position: relative;
+      width: 104px;
+      height: 104px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border: 2px solid var(--red);
+      border-radius: 50%;
+      color: var(--red);
+      text-align: center;
+      text-transform: uppercase;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      transform: rotate(8deg);
+      opacity: 0.88;
+    }
+
+    .stamp::before,
+    .stamp::after {
+      content: "";
+      position: absolute;
+      border: 1px solid var(--red);
+      border-radius: 50%;
+    }
+
+    .stamp::before { inset: 5px; }
+    .stamp::after { inset: 12px; border-style: dashed; }
+
+    .stamp strong {
+      display: block;
+      margin: 3px 0;
+      font-size: 20px;
+      letter-spacing: 0.03em;
+    }
+
+    .day-tabs {
+      display: flex;
+      gap: 10px;
+      margin: 0 0 16px;
+      padding: 0 4px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .day-tabs::-webkit-scrollbar { display: none; }
+
+    .day-button {
+      flex: 0 0 auto;
+      min-width: 86px;
+      padding: 10px 17px 11px;
+      border: 0;
+      border-radius: 14px 14px 6px 6px;
+      color: #7c8998;
+      background: rgba(255, 253, 248, 0.7);
+      box-shadow: 0 3px 0 rgba(23, 54, 93, 0.08);
+      cursor: pointer;
+      transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+    }
+
+    .day-button:not(:disabled):hover { transform: translateY(-2px) rotate(-1deg); }
+
+    .day-button.active {
+      color: white;
+      font-weight: 700;
+      background: var(--blue);
+      box-shadow: 0 5px 0 var(--blue-deep);
+      transform: rotate(-1.5deg);
+    }
+
+    .day-button:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    .schedule-timeline {
+      display: flex;
+      gap: 10px;
+      margin: 0 0 18px;
+      padding: 0 4px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .schedule-timeline::-webkit-scrollbar { display: none; }
+
+    .schedule-item {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      gap: 12px;
+      min-width: 245px;
+      padding: 11px 15px;
+      border: 1px solid rgba(23, 54, 93, 0.1);
+      border-radius: 15px;
+      color: var(--ink);
+      background: rgba(255, 253, 248, 0.82);
+      box-shadow: 0 5px 16px rgba(23, 54, 93, 0.08);
+      text-align: left;
+      cursor: pointer;
+      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+    }
+
+    .schedule-item:hover { transform: translateY(-2px); }
+
+    .schedule-item.active {
+      border-color: rgba(40, 120, 200, 0.38);
+      background: #fffdf8;
+    }
+
+    .schedule-time {
+      padding: 6px 9px;
+      border-radius: 9px;
+      color: white;
+      background: var(--blue);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .schedule-name {
+      font-family: "Gowun Dodum", sans-serif;
+      font-size: 15px;
+    }
+
+    .map-card {
+      position: relative;
+      min-height: 650px;
+      padding: 14px;
+      border: 1px solid rgba(23, 54, 93, 0.09);
+      border-radius: 28px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+      transform: rotate(0.2deg);
+    }
+
+    .map-frame {
+      position: relative;
+      height: 620px;
+      overflow: hidden;
+      border: 2px solid rgba(21, 85, 155, 0.16);
+      border-radius: 19px;
+      background: var(--sky);
+    }
+
+    .region-map {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: #dceef3;
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+    }
+
+    .region-map.dragging { cursor: grabbing; }
+
+    .map-controls {
+      position: absolute;
+      top: 50%;
+      right: 15px;
+      z-index: 650;
+      display: grid;
+      gap: 8px;
+      transform: translateY(-50%);
+    }
+
+    .map-control-button {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(23, 54, 93, 0.16);
+      border-radius: 13px;
+      color: var(--blue-deep);
+      background: rgba(255, 253, 248, 0.94);
+      box-shadow: 0 6px 16px rgba(23, 54, 93, 0.16);
+      font-size: 25px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .map-control-button:hover { background: #fff4c9; }
+    .map-control-button:active { transform: translateY(1px); }
+    .map-control-button:disabled { cursor: default; opacity: 0.42; }
+
+    .map-view-copy {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      z-index: 650;
+      padding: 9px 13px;
+      border: 1px solid rgba(23, 54, 93, 0.16);
+      border-radius: 11px;
+      color: var(--blue-deep);
+      background: rgba(255, 253, 248, 0.94);
+      box-shadow: 0 6px 16px rgba(23, 54, 93, 0.14);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .map-view-copy:hover { background: #fff4c9; }
+    .map-card[data-view-finalized="true"] .map-view-copy { display: none; }
+
+    .map-credit {
+      position: absolute;
+      right: 8px;
+      bottom: 6px;
+      z-index: 300;
+      padding: 3px 6px;
+      border-radius: 6px;
+      color: #718090;
+      background: rgba(255, 253, 248, 0.72);
+      font-size: 9px;
+    }
+
+    .azulejo-corner {
+      position: absolute;
+      width: 78px;
+      height: 78px;
+      z-index: 500;
+      opacity: 0.82;
+      pointer-events: none;
+      background:
+        radial-gradient(circle, transparent 19%, var(--blue) 20% 22%, transparent 23% 38%, var(--blue) 39% 42%, transparent 43%),
+        linear-gradient(45deg, transparent 46%, var(--blue) 47% 51%, transparent 52%),
+        linear-gradient(-45deg, transparent 46%, var(--blue) 47% 51%, transparent 52%),
+        var(--cream);
+      background-size: 38px 38px;
+      border: 5px solid var(--paper);
+      box-shadow: 0 4px 15px rgba(23, 54, 93, 0.15);
+    }
+
+    .azulejo-corner.top-right { top: -10px; right: 24px; transform: rotate(6deg); }
+    .azulejo-corner.bottom-left { bottom: -12px; left: 30px; transform: rotate(-7deg); }
+
+    .tape {
+      position: absolute;
+      width: 92px;
+      height: 26px;
+      z-index: 600;
+      background: rgba(244, 201, 93, 0.7);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.28);
+      pointer-events: none;
+    }
+
+    .tape.left { top: 1px; left: 13%; transform: rotate(-5deg); }
+    .tape.right { right: 10%; bottom: 1px; transform: rotate(4deg); }
+
+    .info-card {
+      position: absolute;
+      left: 36px;
+      bottom: 36px;
+      z-index: 700;
+      width: min(355px, calc(100% - 72px));
+      padding: 18px 19px 17px;
+      border: 1px solid rgba(23, 54, 93, 0.12);
+      border-radius: 18px;
+      background: rgba(255, 253, 248, 0.94);
+      box-shadow: 0 10px 28px rgba(23, 54, 93, 0.16);
+      backdrop-filter: blur(10px);
+      transform: rotate(-1deg);
+    }
+
+    .info-card::after {
+      content: "";
+      position: absolute;
+      top: -9px;
+      left: 42%;
+      width: 62px;
+      height: 17px;
+      background: rgba(239, 106, 91, 0.46);
+      transform: rotate(2deg);
+    }
+
+    .day-label {
+      margin: 0 0 5px;
+      color: var(--red);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .route-title {
+      margin: 0;
+      font-family: "Gowun Dodum", sans-serif;
+      font-size: clamp(21px, 3vw, 29px);
+      font-weight: 400;
+      letter-spacing: -0.04em;
+    }
+
+    .route-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 7px;
+      color: #69798c;
+      font-size: 12px;
+    }
+
+    .route-meta .dot { color: var(--yellow); }
+
+    .progress-wrap {
+      height: 6px;
+      margin: 15px 0 13px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #dce5e8;
+    }
+
+    .progress-bar {
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--blue), #48a9a6);
+      transition: width 100ms linear;
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .status-text {
+      min-width: 0;
+      color: var(--blue-deep);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .replay-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border: 0;
+      border-radius: 999px;
+      color: white;
+      background: var(--red);
+      box-shadow: 0 3px 0 #c94e42;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 160ms ease;
+    }
+
+    .replay-button:hover { transform: translateY(-1px); }
+    .replay-button:active { transform: translateY(2px); box-shadow: none; }
+
+    .map-image { pointer-events: none; }
+    .route-guide {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.95);
+      stroke-width: 8;
+      stroke-linecap: round;
+      stroke-dasharray: 3 15;
+      vector-effect: non-scaling-stroke;
+    }
+    .route-progress {
+      fill: none;
+      stroke-width: 7;
+      stroke-linecap: round;
+      vector-effect: non-scaling-stroke;
+    }
+    .route-progress.gwangmyeong { stroke: var(--blue); }
+    .route-progress.gwacheon { stroke: var(--red); }
+    .place-dot { stroke: white; stroke-width: 5; vector-effect: non-scaling-stroke; }
+    .place-label-bg { fill: rgba(255, 253, 248, 0.96); stroke: rgba(23, 54, 93, 0.13); stroke-width: 2; vector-effect: non-scaling-stroke; }
+    .place-label {
+      fill: var(--ink);
+      font-family: "Gowun Dodum", sans-serif;
+      font-size: 18px;
+      text-anchor: middle;
+    }
+    .traveler-dot {
+      stroke: white;
+      stroke-width: 5;
+      filter: drop-shadow(0 5px 7px rgba(23, 54, 93, 0.28));
+      vector-effect: non-scaling-stroke;
+    }
+    .traveler-halo { fill: none; stroke-width: 4; opacity: 0.25; vector-effect: non-scaling-stroke; }
+
+    .arrival-note {
+      position: absolute;
+      top: 35%;
+      left: 28%;
+      z-index: 650;
+      padding: 13px 17px;
+      border: 1px solid rgba(23, 54, 93, 0.12);
+      border-radius: 13px;
+      color: var(--blue-deep);
+      background: #fff4c9;
+      box-shadow: 0 7px 18px rgba(23, 54, 93, 0.14);
+      font-family: "Gowun Dodum", sans-serif;
+      font-size: 15px;
+      transform: translateY(12px) rotate(2deg);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 350ms ease, transform 350ms ease;
+    }
+
+    .arrival-note.show { opacity: 1; transform: translateY(0) rotate(2deg); }
+
+    .footer-note {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 9px;
+      margin-top: 18px;
+      color: #778394;
+      font-family: "Gowun Dodum", sans-serif;
+      font-size: 13px;
+    }
+
+    .footer-note span { color: var(--red); }
+
+    @media (max-width: 720px) {
+      .page-shell { width: min(100% - 20px, 620px); padding-top: 19px; }
+      .topbar { align-items: center; margin-bottom: 17px; }
+      .stamp { width: 74px; height: 74px; font-size: 8px; }
+      .stamp strong { font-size: 15px; }
+      .map-card { min-height: 600px; padding: 9px; border-radius: 22px; }
+      .map-frame { height: 580px; border-radius: 16px; }
+      .info-card { left: 20px; bottom: 24px; width: calc(100% - 40px); }
+      .arrival-note { top: 25%; left: auto; right: 20px; }
+      .azulejo-corner { width: 58px; height: 58px; background-size: 28px 28px; }
+      .azulejo-corner.top-right { right: 13px; }
+      .azulejo-corner.bottom-left { left: 17px; }
+    }
+
+    @media (max-width: 430px) {
+      .eyebrow { font-size: 10px; }
+      h1 { font-size: 35px; }
+      .trip-date { font-size: 12px; }
+      .stamp { display: none; }
+      .map-card { min-height: 570px; }
+      .map-frame { height: 550px; }
+      .info-card { padding: 16px; }
+      .route-meta { flex-wrap: wrap; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-shell">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">Our little travel log</div>
+        <h1>Portugal, Here We Go!</h1>
+        <p class="trip-date">햇살과 파란 타일을 만나러 가는 첫날</p>
+      </div>
+      <div class="stamp" aria-hidden="true">air mail<strong>LIS</strong>day 01</div>
+    </header>
+
+    <nav class="day-tabs" aria-label="여행 일차 선택">
+      <button class="day-button active" type="button" id="dayOne" aria-pressed="true">1일차</button>
+      <button class="day-button" type="button" disabled>2일차</button>
+      <button class="day-button" type="button" disabled>3일차</button>
+      <button class="day-button" type="button" disabled>4일차</button>
+    </nav>
+
+    <section class="schedule-timeline" aria-label="1일차 일정">
+      <button class="schedule-item active" type="button" id="airportSchedule" aria-pressed="true">
+        <span class="schedule-time">09:00</span>
+        <span class="schedule-name">광명·과천에서 인천공항으로</span>
+      </button>
+    </section>
+
+    <section class="map-card" data-view-finalized="false" aria-label="광명과 과천에서 인천공항으로 이동하는 지도">
+      <div class="tape left" aria-hidden="true"></div>
+      <div class="tape right" aria-hidden="true"></div>
+      <div class="azulejo-corner top-right" aria-hidden="true"></div>
+      <div class="azulejo-corner bottom-left" aria-hidden="true"></div>
+
+      <div class="map-frame">
+        <svg class="region-map" id="regionMap" viewBox="480 310 3204 1740" role="img" aria-label="광명과 과천에서 인천국제공항으로 이동하는 단순화 지도">
+          <image class="map-image" href="./assets/map_sources/seoul_explorer_default.webp" x="0" y="0" width="4096" height="2560" />
+
+          <path class="route-guide" d="M2415 1394C2100 1320 1720 1370 1181 1462" />
+          <path class="route-guide" d="M2774 1576C2450 1740 2080 1620 1780 1500C1550 1410 1350 1420 1181 1462" />
+          <path class="route-progress gwangmyeong" id="gwangmyeongProgress" d="M2415 1394C2100 1320 1720 1370 1181 1462" />
+          <path class="route-progress gwacheon" id="gwacheonProgress" d="M2774 1576C2450 1740 2080 1620 1780 1500C1550 1410 1350 1420 1181 1462" />
+
+          <g class="map-marker" data-x="1181" data-y="1462" transform="translate(1181 1462)">
+            <circle class="place-dot" r="35" fill="#4d9b76" />
+            <rect class="place-label-bg" x="-187" y="-160" width="374" height="101" rx="35" />
+            <text class="place-label" y="-91" style="font-size:48px">인천국제공항</text>
+          </g>
+          <g class="map-marker" data-x="2415" data-y="1394" transform="translate(2415 1394)">
+            <circle class="place-dot" r="32" fill="#2878c8" />
+            <rect class="place-label-bg" x="-112" y="56" width="224" height="101" rx="35" />
+            <text class="place-label" y="125" style="font-size:48px">광명</text>
+          </g>
+          <g class="map-marker" data-x="2774" data-y="1576" transform="translate(2774 1576)">
+            <circle class="place-dot" r="32" fill="#ef6a5b" />
+            <rect class="place-label-bg" x="-112" y="56" width="224" height="101" rx="35" />
+            <text class="place-label" y="125" style="font-size:48px">과천</text>
+          </g>
+
+          <circle class="traveler-halo" id="gwangmyeongHalo" cx="2415" cy="1394" r="51" stroke="#2878c8" />
+          <circle class="traveler-dot" id="gwangmyeongTraveler" cx="2415" cy="1394" r="27" fill="#2878c8" />
+          <circle class="traveler-halo" id="gwacheonHalo" cx="2774" cy="1576" r="51" stroke="#ef6a5b" />
+          <circle class="traveler-dot" id="gwacheonTraveler" cx="2774" cy="1576" r="27" fill="#ef6a5b" />
+        </svg>
+        <div class="map-controls" aria-label="지도 확대 및 축소">
+          <button class="map-control-button" type="button" id="zoomInButton" aria-label="지도 확대">+</button>
+          <button class="map-control-button" type="button" id="zoomOutButton" aria-label="지도 축소">−</button>
+        </div>
+        <button class="map-view-copy" type="button" id="copyMapViewButton">화면 값 복사</button>
+        <div class="map-credit">Map data © OpenStreetMap · © CARTO</div>
+        <div class="arrival-note" id="arrivalNote" role="status">인천공항에서 만났어요 ✦</div>
+
+        <article class="info-card">
+          <p class="day-label">Day 01 · Meet up</p>
+          <h2 class="route-title">인천공항으로 모이기</h2>
+          <div class="route-meta">
+            <span>광명 09:00</span><span class="dot">✦</span><span>과천 09:00</span><span class="dot">✦</span><span>ICN 10:00</span>
+          </div>
+          <div class="progress-wrap" aria-hidden="true">
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
+          <div class="status-row">
+            <span class="status-text" id="statusText">일정을 눌러 이동 보기</span>
+            <button class="replay-button" type="button" id="replayButton" aria-label="공항 이동 다시 보기">↻ 다시 보기</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <p class="footer-note"><span>♥</span> Day 1 · Gwangmyeong + Gwacheon → Incheon Airport</p>
+  </main>
+
+  <script>
+    const progressBar = document.getElementById("progressBar");
+    const statusText = document.getElementById("statusText");
+    const arrivalNote = document.getElementById("arrivalNote");
+    const replayButton = document.getElementById("replayButton");
+    const airportSchedule = document.getElementById("airportSchedule");
+    const regionMap = document.getElementById("regionMap");
+    const zoomInButton = document.getElementById("zoomInButton");
+    const zoomOutButton = document.getElementById("zoomOutButton");
+    const copyMapViewButton = document.getElementById("copyMapViewButton");
+    const mapMarkers = [...document.querySelectorAll(".map-marker")];
+    const gwangmyeongPath = document.getElementById("gwangmyeongProgress");
+    const gwacheonPath = document.getElementById("gwacheonProgress");
+    const gwangmyeongTraveler = document.getElementById("gwangmyeongTraveler");
+    const gwacheonTraveler = document.getElementById("gwacheonTraveler");
+    const gwangmyeongHalo = document.getElementById("gwangmyeongHalo");
+    const gwacheonHalo = document.getElementById("gwacheonHalo");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const routeElements = [
+      { path: gwangmyeongPath, traveler: gwangmyeongTraveler, halo: gwangmyeongHalo, delay: 0 },
+      { path: gwacheonPath, traveler: gwacheonTraveler, halo: gwacheonHalo, delay: 0.08 }
+    ];
+    const mapSize = { width: 4096, height: 2560 };
+    const mapTiles = { zoom: 11, size: 512, originX: 1741, originY: 791 };
+    const initialView = { centerX: 1930.5, centerY: 1558, width: 2053 };
+    const zoomRange = { min: 0.8, max: 2.5 };
+    const view = { x: 904, y: 1002, width: 2053, height: 1112 };
+    const drag = { active: false, pointerId: null, x: 0, y: 0, viewX: 0, viewY: 0 };
+    let animationFrame;
+    let startTime;
+
+    function clamp(value, min = 0, max = 1) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function mapAspectRatio() {
+      const rect = regionMap.getBoundingClientRect();
+      return rect.width && rect.height ? rect.width / rect.height : 1200 / 620;
+    }
+
+    function mapViewWidthRange() {
+      const aspect = mapAspectRatio();
+      return {
+        min: initialView.width / zoomRange.max,
+        max: Math.min(initialView.width / zoomRange.min, mapSize.width, mapSize.height * aspect)
+      };
+    }
+
+    function clampView() {
+      const aspect = mapAspectRatio();
+      const range = mapViewWidthRange();
+      view.width = clamp(view.width, range.min, range.max);
+      view.height = view.width / aspect;
+      view.x = clamp(view.x, 0, mapSize.width - view.width);
+      view.y = clamp(view.y, 0, mapSize.height - view.height);
+    }
+
+    function updateMapMarkerSizes() {
+      const scale = view.width / initialView.width;
+      mapMarkers.forEach((marker) => {
+        marker.setAttribute("transform", `translate(${marker.dataset.x} ${marker.dataset.y}) scale(${scale})`);
+      });
+      routeElements.forEach((route) => {
+        route.traveler.setAttribute("r", 27 * scale);
+        route.halo.setAttribute("r", 51 * scale);
+      });
+    }
+
+    function renderMapView() {
+      clampView();
+      regionMap.setAttribute("viewBox", `${view.x} ${view.y} ${view.width} ${view.height}`);
+      updateMapMarkerSizes();
+      const zoom = initialView.width / view.width;
+      const minimumZoom = initialView.width / mapViewWidthRange().max;
+      zoomInButton.disabled = zoom >= zoomRange.max - 0.01;
+      zoomOutButton.disabled = zoom <= minimumZoom + 0.01;
+    }
+
+    function initializeMapView() {
+      view.width = initialView.width;
+      view.height = view.width / mapAspectRatio();
+      view.x = initialView.centerX - view.width / 2;
+      view.y = initialView.centerY - view.height / 2;
+      renderMapView();
+    }
+
+    function changeMapZoom(factor) {
+      const currentZoom = initialView.width / view.width;
+      const nextZoom = clamp(currentZoom * factor, zoomRange.min, zoomRange.max);
+      const centerX = view.x + view.width / 2;
+      const centerY = view.y + view.height / 2;
+      view.width = initialView.width / nextZoom;
+      view.height = view.width / mapAspectRatio();
+      view.x = centerX - view.width / 2;
+      view.y = centerY - view.height / 2;
+      renderMapView();
+    }
+
+    function startMapDrag(event) {
+      if (event.button !== 0) return;
+      drag.active = true;
+      drag.pointerId = event.pointerId;
+      drag.x = event.clientX;
+      drag.y = event.clientY;
+      drag.viewX = view.x;
+      drag.viewY = view.y;
+      regionMap.classList.add("dragging");
+      regionMap.setPointerCapture(event.pointerId);
+    }
+
+    function moveMap(event) {
+      if (!drag.active || event.pointerId !== drag.pointerId) return;
+      const rect = regionMap.getBoundingClientRect();
+      view.x = drag.viewX - (event.clientX - drag.x) * view.width / rect.width;
+      view.y = drag.viewY - (event.clientY - drag.y) * view.height / rect.height;
+      renderMapView();
+    }
+
+    function stopMapDrag(event) {
+      if (!drag.active || event.pointerId !== drag.pointerId) return;
+      drag.active = false;
+      regionMap.classList.remove("dragging");
+      if (regionMap.hasPointerCapture(event.pointerId)) regionMap.releasePointerCapture(event.pointerId);
+    }
+
+    function resizeMapView() {
+      const centerX = view.x + view.width / 2;
+      const centerY = view.y + view.height / 2;
+      view.height = view.width / mapAspectRatio();
+      view.x = centerX - view.width / 2;
+      view.y = centerY - view.height / 2;
+      renderMapView();
+    }
+
+    function mapPointToCoordinates(x, y) {
+      const tileCount = 2 ** mapTiles.zoom;
+      const tileX = mapTiles.originX + x / mapTiles.size;
+      const tileY = mapTiles.originY + y / mapTiles.size;
+      const longitude = tileX / tileCount * 360 - 180;
+      const mercator = Math.PI - 2 * Math.PI * tileY / tileCount;
+      const latitude = Math.atan(Math.sinh(mercator)) * 180 / Math.PI;
+      return [latitude, longitude];
+    }
+
+    function currentMapViewText() {
+      const centerX = view.x + view.width / 2;
+      const centerY = view.y + view.height / 2;
+      const [latitude, longitude] = mapPointToCoordinates(centerX, centerY);
+      const zoom = initialView.width / view.width;
+      return [
+        "map: seoul-airport-meetup",
+        `center: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`,
+        `zoom: ${zoom.toFixed(4)}`,
+        `viewBox: ${view.x.toFixed(1)}, ${view.y.toFixed(1)}, ${view.width.toFixed(1)}, ${view.height.toFixed(1)}`,
+        "finalized: false"
+      ].join("\n");
+    }
+
+    function fallbackCopy(text) {
+      const field = document.createElement("textarea");
+      field.value = text;
+      field.setAttribute("readonly", "");
+      field.style.position = "fixed";
+      field.style.opacity = "0";
+      document.body.appendChild(field);
+      field.select();
+      document.execCommand("copy");
+      field.remove();
+    }
+
+    async function copyMapView() {
+      const text = currentMapViewText();
+      try {
+        if (!navigator.clipboard?.writeText) throw new Error("clipboard unavailable");
+        await navigator.clipboard.writeText(text);
+      } catch {
+        fallbackCopy(text);
+      }
+      copyMapViewButton.textContent = "복사됨 ✓";
+      window.setTimeout(() => { copyMapViewButton.textContent = "화면 값 복사"; }, 1300);
+    }
+
+    function easeInOutCubic(value) {
+      return value < 0.5
+        ? 4 * value * value * value
+        : 1 - Math.pow(-2 * value + 2, 3) / 2;
+    }
+
+    function setRouteProgress(route, progress) {
+      const localProgress = clamp((progress - route.delay) / (1 - route.delay));
+      const eased = easeInOutCubic(localProgress);
+      const length = route.path.getTotalLength();
+      const point = route.path.getPointAtLength(length * eased);
+      route.path.style.strokeDasharray = `${length}`;
+      route.path.style.strokeDashoffset = `${length * (1 - eased)}`;
+      route.traveler.setAttribute("cx", point.x);
+      route.traveler.setAttribute("cy", point.y);
+      route.halo.setAttribute("cx", point.x);
+      route.halo.setAttribute("cy", point.y);
+    }
+
+    function setProgress(progress) {
+      routeElements.forEach((route) => setRouteProgress(route, progress));
+      progressBar.style.width = `${Math.round(progress * 100)}%`;
+    }
+
+    function finishAirportTrip() {
+      setProgress(1);
+      statusText.textContent = "인천공항 도착! 일행 만나기 ✦";
+      arrivalNote.classList.add("show");
+    }
+
+    function playAirportTrip() {
+      cancelAnimationFrame(animationFrame);
+      startTime = undefined;
+      arrivalNote.classList.remove("show");
+      airportSchedule.classList.add("active");
+      airportSchedule.setAttribute("aria-pressed", "true");
+      setProgress(0);
+      statusText.textContent = "광명·과천에서 공항으로 이동 중…";
+
+      if (reducedMotion) return finishAirportTrip();
+
+      const duration = 5200;
+      function animate(timestamp) {
+        if (!startTime) startTime = timestamp;
+        const rawProgress = Math.min((timestamp - startTime) / duration, 1);
+        setProgress(rawProgress);
+
+        if (rawProgress > 0.78 && rawProgress < 1) statusText.textContent = "인천공항에 거의 도착…";
+
+        if (rawProgress < 1) animationFrame = requestAnimationFrame(animate);
+        else finishAirportTrip();
+      }
+      animationFrame = requestAnimationFrame(animate);
+    }
+
+    airportSchedule.addEventListener("click", playAirportTrip);
+    replayButton.addEventListener("click", playAirportTrip);
+    zoomInButton.addEventListener("click", () => changeMapZoom(1.25));
+    zoomOutButton.addEventListener("click", () => changeMapZoom(0.8));
+    copyMapViewButton.addEventListener("click", copyMapView);
+    regionMap.addEventListener("pointerdown", startMapDrag);
+    regionMap.addEventListener("pointermove", moveMap);
+    regionMap.addEventListener("pointerup", stopMapDrag);
+    regionMap.addEventListener("pointercancel", stopMapDrag);
+    window.addEventListener("resize", resizeMapView);
+    initializeMapView();
+    setProgress(0);
+  </script>
+</body>
+</html>

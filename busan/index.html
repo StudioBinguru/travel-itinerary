@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>2박 3일 부산 여행 (26.08.13 ~ 26.08.15)</title>
+  <meta name="description" content="부산 2박 3일의 날짜별 일정과 이동 경로를 한눈에 보는 여행 지도">
+  <meta property="og:title" content="2박 3일 부산 여행 (26.08.13 ~ 26.08.15)">
+  <meta property="og:description" content="부산 2박 3일의 날짜별 일정과 이동 경로">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://studiobinguru.github.io/travel-itinerary/busan/assets/busan-social-preview.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@700&display=block" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="page-shell">
+    <header class="hero">
+      <h1>2박 3일 부산 여행 <span>26.08.13 ～ 26.08.15</span></h1>
+      <div class="hero-mark" aria-hidden="true"><span>BUSAN</span><b>여름</b></div>
+    </header>
+
+    <nav class="day-tabs" aria-label="날짜 선택">
+      <button class="day-tab is-active" data-day="0"><b>DAY 1</b><span>8월 13일 · 목</span></button>
+      <button class="day-tab" data-day="1"><b>DAY 2</b><span>8월 14일 · 금</span></button>
+      <button class="day-tab" data-day="2"><b>DAY 3</b><span>8월 15일 · 토</span></button>
+    </nav>
+
+    <section class="content-grid">
+      <article class="map-card">
+        <div id="map-stage" class="map-stage">
+          <svg id="trip-map" role="img" aria-label="부산 여행 일정 지도" xmlns="http://www.w3.org/2000/svg">
+            <image id="map-image" x="0" y="0" width="100%" height="100%" preserveAspectRatio="none"></image>
+            <g id="route-layer"></g>
+            <g id="marker-layer"></g>
+            <g id="transport-layer"></g>
+          </svg>
+          <div class="map-controls" aria-label="지도 확대 축소">
+            <button id="zoom-in" type="button" aria-label="확대">＋</button>
+            <button id="zoom-out" type="button" aria-label="축소">−</button>
+          </div>
+          <button id="reset-view" class="reset-button" type="button">처음으로</button>
+        </div>
+      </article>
+
+      <aside class="schedule-card">
+        <div class="schedule-heading">
+          <p id="day-label">첫째 날 · 8월 13일 목요일</p>
+        </div>
+        <ol id="schedule-list" class="schedule-list"></ol>
+      </aside>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
